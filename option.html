@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta name='author' content='Felix Böhm'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <script src='https://d3js.org/d3.v5.min.js'></script>
+    </head>
+    <body>
+        <div id='option'></div>
+        <script>
+
+            results = {
+                'count': 47,
+                'data': 32
+            }
+
+            var margin = {top: 20, right: 20, bottom: 20, left: 20}
+            var width = 400 - margin.left - margin.right
+            var height = 400 - margin.top - margin.bottom
+
+            var svg = d3.select('#option')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + (width + margin.left + margin.right) / 2 + ',' + (height + margin.top + margin.bottom) / 2 + ')')
+
+            var radius = Math.min(width, height) / 2
+
+            var data = {selected: results.data, unselected: results.count - results.data}
+
+            var color = d3.scaleOrdinal()
+                .domain(data)
+                .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+
+            data = d3.pie().value(function(d) { return d.value })(d3.entries(data))
+
+            svg.selectAll('whatever')
+                .data(data)
+                .enter()
+                .append('path')
+                .attr('d', d3.arc().innerRadius(100).outerRadius(radius))
+                .attr('fill', function(d) { return color(d.data.key) })
+                .style('stroke-width', '2px')
+                .style('stroke', 'black')
+
+        </script>
+        <style>
+
+            body {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+            svg {
+                display: block;  /* needed to remove weird padding */
+            }
+
+        </style>
+    </body>
+</html>
